@@ -1,10 +1,14 @@
+
+print("Agent started")
+
 import json
 import time
 from scraper import fetch_price
 from agent import agent_decide
 from notifier import notify
+# print("Agent started")
 
-URL = "PRODUCT_URL"
+URL = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 TARGET_PRICE = 70000
 
 def load_last_price():
@@ -27,10 +31,11 @@ while True:
 
     decision = agent_decide(old_price, new_price, TARGET_PRICE)
 
-    if decision["notify"] == "YES":
-        notify(f"Price dropped to ₹{new_price}")
+    print("AGENT DECISION:", decision)
 
-    save_price(new_price)
+    if decision.get("notify") == "YES":
+        notify(f"Price dropped to {new_price}")
 
-    sleep_time = parse_sleep(decision["next_check"])
+    sleep_time = parse_sleep(decision.get("next_check", "6 hours"))
+
     time.sleep(sleep_time)
